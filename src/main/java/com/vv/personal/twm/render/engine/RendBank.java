@@ -1,6 +1,5 @@
 package com.vv.personal.twm.render.engine;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.vv.personal.twm.artifactory.bank.Bank;
 import org.slf4j.Logger;
@@ -10,6 +9,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import static com.vv.personal.twm.render.constants.Constants.*;
+import static com.vv.personal.twm.render.util.JsonUtil.GSON;
 
 /**
  * @author Vivek
@@ -17,8 +17,6 @@ import static com.vv.personal.twm.render.constants.Constants.*;
  */
 public class RendBank {
     private static final Logger LOGGER = LoggerFactory.getLogger(RendBank.class);
-
-    private static final Gson GSON = new Gson();
 
     public static String generateTable(String entireJsonList) {
         //https://sites.google.com/site/gson/gson-user-guide#TOC-Collections-Examples
