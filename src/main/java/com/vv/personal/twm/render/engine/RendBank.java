@@ -1,10 +1,13 @@
 package com.vv.personal.twm.render.engine;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.vv.personal.twm.artifactory.bank.Bank;
-import com.vv.personal.twm.render.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 import static com.vv.personal.twm.render.constants.Constants.*;
 
@@ -18,7 +21,12 @@ public class RendBank {
     private static final Gson GSON = new Gson();
 
     public static String generateTable(String entireJsonList) {
-        String[] jsons = JsonUtil.extractRecordsFromString(entireJsonList);
+        //https://sites.google.com/site/gson/gson-user-guide#TOC-Collections-Examples
+        //Helps in extracting list of Bank from the combined json input string
+        Type collectionType = new TypeToken<Collection<Bank>>() {
+        }.getType();
+        Collection<Bank> banks = GSON.fromJson(entireJsonList, collectionType);
+
         StringBuilder table = new StringBuilder(HTML_TABLE_START);
         table.append(HTML_TABLE_ROW_START)
                 .append(String.format(HTML_TABLE_HEADER, "Name"))
@@ -27,9 +35,8 @@ public class RendBank {
                 .append(String.format(HTML_TABLE_HEADER, "Contact"))
                 .append(HTML_TABLE_ROW_END);
 
-        for (String json : jsons) {
+        banks.forEach(bank -> {
             try {
-                Bank bank = GSON.fromJson(json, Bank.class);
                 LOGGER.info(bank.toString());
                 table.append(HTML_TABLE_ROW_START);
                 table.append(String.format(HTML_TABLE_CELL, bank.getName()));
@@ -38,9 +45,9 @@ public class RendBank {
                 table.append(String.format(HTML_TABLE_CELL, bank.getContactNumber()));
                 table.append(HTML_TABLE_ROW_END);
             } catch (Exception e) {
-                LOGGER.error("Failed to parse '{}' to Bank. Skipping. ", json, e);
+                LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", bank.getName(), e);
             }
-        }
+        });
         table.append(HTML_TABLE_END);
         return table.toString();
     }
