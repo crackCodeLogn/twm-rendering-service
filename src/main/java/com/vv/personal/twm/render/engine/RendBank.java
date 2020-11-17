@@ -1,7 +1,6 @@
 package com.vv.personal.twm.render.engine;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.vv.personal.twm.artifactory.bank.Bank;
 import com.vv.personal.twm.render.util.JsonUtil;
 import org.slf4j.Logger;
