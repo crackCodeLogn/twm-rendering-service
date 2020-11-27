@@ -45,7 +45,7 @@ public class RendBank {
         Arrays.stream(bankSplit).forEach(bankJson -> {
             try {
                 BankProto.Bank.Builder builder = BankProto.Bank.newBuilder();
-                JsonFormat.parser().merge(bankJson, builder);
+                JsonFormat.parser().ignoringUnknownFields().merge(bankJson, builder);
                 BankProto.Bank bank = builder.build();
                 LOGGER.info(bank.toString());
                 table.append(HTML_TABLE_ROW_START);
