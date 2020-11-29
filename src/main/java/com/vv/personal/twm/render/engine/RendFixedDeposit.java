@@ -21,15 +21,16 @@ public class RendFixedDeposit extends Rend {
         addHeaderCells(table,
                 "Number",
                 "User",
+                "FD Number (Key)",
+                "Cust Id",
                 "Bank IFSC",
                 "Deposit Amount",
                 "Rate of interest",
                 "Start Date",
+                "End Date",
                 "Months",
                 "Days",
-                "Nominee",
-                "InsertionTime",
-                "Key");
+                "Nominee");
 
         AtomicInteger counter = new AtomicInteger(0);
         fixedDepositList.getFixedDepositsList().forEach(fixedDeposit -> {
@@ -38,15 +39,16 @@ public class RendFixedDeposit extends Rend {
                 addRowCells(table,
                         counter.incrementAndGet(),
                         fixedDeposit.getUser(),
+                        fixedDeposit.getFdNumber(),
+                        fixedDeposit.getCustomerId(),
                         fixedDeposit.getBankIFSC(),
                         fixedDeposit.getDepositAmount(),
                         fixedDeposit.getRateOfInterest(),
                         fixedDeposit.getStartDate(),
+                        fixedDeposit.getEndDate(),
                         fixedDeposit.getMonths(),
                         fixedDeposit.getDays(),
-                        fixedDeposit.getNominee(),
-                        fixedDeposit.getInsertionTime(),
-                        fixedDeposit.getKey());
+                        fixedDeposit.getNominee());
             } catch (Exception e) {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", fixedDeposit, e);
             }
