@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static com.vv.personal.twm.render.engine.ParseTribalWarsOverview.generateVillaListBuilder;
+import static com.vv.personal.twm.render.engine.ParseTribalWarsOverview.generateVillaList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -39,10 +39,10 @@ public class ParseTribalWarsOverviewTest {
     @Test
     public void testGenerateVillaListBuilder() {
         String html = readFileFromLocation("src/test/resources/tw_overview.html");
-        VillaProto.VillaList.Builder builder = generateVillaListBuilder(html);
-        LOGGER.info("{}", builder);
-        assertEquals(13, builder.getVillasCount());
-        assertTrue(builder.getVillasList().stream().anyMatch(villa -> villa.getName().contains("Mahakal")));
-        assertTrue(builder.getVillasList().stream().anyMatch(villa -> villa.getName().contains("Bhoot")));
+        VillaProto.VillaList villaList = generateVillaList(html);
+        LOGGER.info("{}", villaList);
+        assertEquals(13, villaList.getVillasCount());
+        assertTrue(villaList.getVillasList().stream().anyMatch(villa -> villa.getName().contains("Mahakal")));
+        assertTrue(villaList.getVillasList().stream().anyMatch(villa -> villa.getName().contains("Bhoot")));
     }
 }

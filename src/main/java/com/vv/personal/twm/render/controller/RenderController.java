@@ -37,14 +37,13 @@ public class RenderController {
     }
 
     @PostMapping("/tw/parse/overview")
-    public VillaProto.VillaList.Builder parseTribalWarsOverviewHtml(@RequestBody String htmlData) {
-        VillaProto.VillaList.Builder villaListBuilder = VillaProto.VillaList.newBuilder();
+    public VillaProto.VillaList parseTribalWarsOverviewHtml(@RequestBody String htmlData) {
         try {
-            villaListBuilder = ParseTribalWarsOverview.generateVillaListBuilder(htmlData);
+            return ParseTribalWarsOverview.generateVillaList(htmlData);
         } catch (Exception e) {
             LOGGER.error("Failed to parse overview page. ", e);
         }
-        return villaListBuilder;
+        return VillaProto.VillaList.newBuilder().build();
     }
 
 }

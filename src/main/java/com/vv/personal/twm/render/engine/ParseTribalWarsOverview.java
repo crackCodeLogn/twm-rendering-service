@@ -15,7 +15,7 @@ import static com.vv.personal.twm.render.constants.Constants.*;
 public class ParseTribalWarsOverview {
     private static final Logger LOGGER = LoggerFactory.getLogger(ParseTribalWarsOverview.class);
 
-    public static VillaProto.VillaList.Builder generateVillaListBuilder(String overviewHtml) {
+    public static VillaProto.VillaList generateVillaList(String overviewHtml) {
         VillaProto.VillaList.Builder villaListBuilder = VillaProto.VillaList.newBuilder();
 
         Document document = Jsoup.parse(overviewHtml);
@@ -46,6 +46,6 @@ public class ParseTribalWarsOverview {
                     villaListBuilder.addVillas(villa);
                 });
         LOGGER.info("Parsed out {} villas from the overview html", villaListBuilder.getVillasCount());
-        return villaListBuilder;
+        return villaListBuilder.build();
     }
 }
