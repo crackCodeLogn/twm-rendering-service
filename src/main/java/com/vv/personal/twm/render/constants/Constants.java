@@ -14,4 +14,16 @@ public class Constants {
     public static final String HTML_TABLE_CELL = "<td style=\"border:1px solid black;text-align:center\">%s</td>";
     public static final String HTML_TABLE_END = "</table>";
 
+    public static final String ASSETS = "/assets/";
+    public static final String TAG_LINK = "link";
+    public static final String TAG_A = "a";
+    public static final String ATTR_HREF = "href";
+    public static final String CLASS_QUICKEDIT_CONTENT = "quickedit-content";
+
+    public static final char CHAR_AND = '&';
+    public static final char CHAR_EQUAL = '=';
+    public static final char CHAR_SPACE = ' ';
+    public static final char CHAR_COORD_START = '(';
+    public static final char CHAR_COORD_END = ')';
+    public static final String COORD_SEPARATOR = "\\|";
 }

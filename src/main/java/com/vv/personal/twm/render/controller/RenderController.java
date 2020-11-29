@@ -2,6 +2,8 @@ package com.vv.personal.twm.render.controller;
 
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
+import com.vv.personal.twm.artifactory.generated.tw.VillaProto;
+import com.vv.personal.twm.render.engine.ParseTribalWarsOverview;
 import com.vv.personal.twm.render.engine.RendBank;
 import com.vv.personal.twm.render.engine.RendFixedDeposit;
 import org.slf4j.Logger;
@@ -32,6 +34,17 @@ public class RenderController {
         if (fixedDepositList.getFixedDepositsList().isEmpty()) return "FAILED - EMPTY JSON!";
         LOGGER.info("Received string to render for FD: {}", fixedDepositList);
         return RendFixedDeposit.generateTable(fixedDepositList);
+    }
+
+    @PostMapping("/tw/parse/overview")
+    public VillaProto.VillaList.Builder parseTribalWarsOverviewHtml(@RequestBody String htmlData) {
+        VillaProto.VillaList.Builder villaListBuilder = VillaProto.VillaList.newBuilder();
+        try {
+            villaListBuilder = ParseTribalWarsOverview.generateVillaListBuilder(htmlData);
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse overview page. ", e);
+        }
+        return villaListBuilder;
     }
 
 }
