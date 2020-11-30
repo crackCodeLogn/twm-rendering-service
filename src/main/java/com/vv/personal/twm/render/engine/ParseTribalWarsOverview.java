@@ -103,7 +103,9 @@ public class ParseTribalWarsOverview {
             String wallInfo = document.getElementsByClass(CLASS_MAIN_TABLE).get(0).text();
             wallInfo = wallInfo.substring(wallInfo.indexOf(CHAR_BRACE_START) + 1, wallInfo.indexOf(CHAR_BRACE_END))
                     .substring(LEVEL_WALL.length() + 1);
-            return Integer.parseInt(wallInfo);
+            int wallLevel = Integer.parseInt(wallInfo);
+            LOGGER.info("Recorded wall level {}", wallLevel);
+            return wallLevel;
         } catch (Exception e) {
             LOGGER.error("Failed to extract wall information from html. ", e);
         }
@@ -117,7 +119,9 @@ public class ParseTribalWarsOverview {
             nobleInfo = nobleInfo.substring(nobleInfo.lastIndexOf(CHAR_COLON) + 1);
             nobleInfo = nobleInfo.substring(nobleInfo.indexOf(CHAR_SPACE) + 1);
             nobleInfo = nobleInfo.substring(0, nobleInfo.indexOf(CHAR_SPACE));
-            return splitFractionAndGetDenominator(nobleInfo);
+            int noblemen = splitFractionAndGetDenominator(nobleInfo);
+            LOGGER.info("Recorded {} noblemen", noblemen);
+            return noblemen;
         } catch (Exception e) {
             LOGGER.error("Failed to extract noblemen information from html. ", e);
         }

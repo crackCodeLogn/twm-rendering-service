@@ -2,13 +2,17 @@ package com.vv.personal.twm.render.controller;
 
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
+import com.vv.personal.twm.artifactory.generated.tw.HtmlDataParcelProto;
 import com.vv.personal.twm.artifactory.generated.tw.VillaProto;
 import com.vv.personal.twm.render.engine.ParseTribalWarsOverview;
 import com.vv.personal.twm.render.engine.RendBank;
 import com.vv.personal.twm.render.engine.RendFixedDeposit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Vivek
@@ -43,14 +47,12 @@ public class RenderController {
         return VillaProto.VillaList.newBuilder().build();
     }
 
-    @GetMapping("/tw/parse/screens") //parsing wall, train and snob together -- hard binding!
-    public VillaProto.Troops parseTribalWarsScreensHtml(@PathVariable String wallHtml,
-                                                        @PathVariable String trainHtml,
-                                                        @PathVariable String snobHtml) {
+    @PostMapping("/tw/parse/screens") //parsing wall, train and snob together -- hard binding!
+    public VillaProto.Troops parseTribalWarsScreensHtml(@RequestBody HtmlDataParcelProto.Parcel parcel) {
         try {
-            int wallLevel = ParseTribalWarsOverview.extractWallInfo(wallHtml);
-            int noblemen = ParseTribalWarsOverview.extractNoblemenInfo(snobHtml);
-            return ParseTribalWarsOverview.extractTroopsInfo(trainHtml, wallLevel, noblemen);
+            int wallLevel = ParseTribalWarsOverview.extractWallInfo(parcel.getWallPageSource());
+            int noblemen = ParseTribalWarsOverview.extractNoblemenInfo(parcel.getSnobPageSource());
+            return ParseTribalWarsOverview.extractTroopsInfo(parcel.getTrainPageSource(), wallLevel, noblemen);
         } catch (Exception e) {
             LOGGER.error("Failed to parse overview page. ", e);
         }
