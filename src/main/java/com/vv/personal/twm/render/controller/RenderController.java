@@ -8,10 +8,7 @@ import com.vv.personal.twm.render.engine.RendBank;
 import com.vv.personal.twm.render.engine.RendFixedDeposit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Vivek
@@ -44,6 +41,20 @@ public class RenderController {
             LOGGER.error("Failed to parse overview page. ", e);
         }
         return VillaProto.VillaList.newBuilder().build();
+    }
+
+    @GetMapping("/tw/parse/screens") //parsing wall, train and snob together -- hard binding!
+    public VillaProto.Troops parseTribalWarsScreensHtml(@PathVariable String wallHtml,
+                                                        @PathVariable String trainHtml,
+                                                        @PathVariable String snobHtml) {
+        try {
+            int wallLevel = ParseTribalWarsOverview.extractWallInfo(wallHtml);
+            int noblemen = ParseTribalWarsOverview.extractNoblemenInfo(snobHtml);
+            return ParseTribalWarsOverview.extractTroopsInfo(trainHtml, wallLevel, noblemen);
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse overview page. ", e);
+        }
+        return VillaProto.Troops.newBuilder().build();
     }
 
 }

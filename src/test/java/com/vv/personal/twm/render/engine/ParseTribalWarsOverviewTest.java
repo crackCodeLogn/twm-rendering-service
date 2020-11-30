@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static com.vv.personal.twm.render.engine.ParseTribalWarsOverview.generateVillaList;
+import static com.vv.personal.twm.render.engine.ParseTribalWarsOverview.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -45,4 +45,32 @@ public class ParseTribalWarsOverviewTest {
         assertTrue(villaList.getVillasList().stream().anyMatch(villa -> villa.getName().contains("Mahakal")));
         assertTrue(villaList.getVillasList().stream().anyMatch(villa -> villa.getName().contains("Bhoot")));
     }
+
+    @Test
+    public void testExtractWallInfo() {
+        String html = readFileFromLocation("src/test/resources/tw_wall.html");
+        int wallLevel = extractWallInfo(html);
+        assertEquals(20, wallLevel);
+    }
+
+    @Test
+    public void testExtractNoblemenInfo() {
+        String html = readFileFromLocation("src/test/resources/tw_snob.html");
+        int noblemen = extractNoblemenInfo(html);
+        assertEquals(4, noblemen);
+    }
+
+    @Test
+    public void testExtractTroopsInfo() {
+        String html = readFileFromLocation("src/test/resources/tw_train.html");
+        VillaProto.Troops troops = extractTroopsInfo(html,
+                extractWallInfo(readFileFromLocation("src/test/resources/tw_wall.html")),
+                extractNoblemenInfo(readFileFromLocation("src/test/resources/tw_snob.html")));
+
+        assertEquals(5205, troops.getAx());
+        assertEquals(2392, troops.getLc());
+        assertEquals(352, troops.getRm());
+        assertEquals(101, troops.getCt());
+    }
+
 }
