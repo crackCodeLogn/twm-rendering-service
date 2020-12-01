@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static com.vv.personal.twm.render.engine.ParseTribalWarsOverview.*;
+import static com.vv.personal.twm.render.engine.tw.ParseTribalWars.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -21,8 +21,8 @@ import static org.junit.Assert.assertTrue;
  * @since 29/11/20
  */
 @RunWith(JUnit4.class)
-public class ParseTribalWarsOverviewTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParseTribalWarsOverviewTest.class);
+public class ParseTribalWarsTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParseTribalWarsTest.class);
 
     public static String readFileFromLocation(String src) {
         StringBuilder data = new StringBuilder();

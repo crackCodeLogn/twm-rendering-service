@@ -1,4 +1,4 @@
-package com.vv.personal.twm.render.engine;
+package com.vv.personal.twm.render.engine.tw;
 
 import com.vv.personal.twm.artifactory.generated.tw.VillaProto;
 import org.jsoup.Jsoup;
@@ -17,8 +17,8 @@ import static com.vv.personal.twm.render.constants.Constants.*;
  * @author Vivek
  * @since 29/11/20
  */
-public class ParseTribalWarsOverview {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParseTribalWarsOverview.class);
+public class ParseTribalWars {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParseTribalWars.class);
 
     public static VillaProto.VillaList generateVillaList(String overviewHtml) {
         VillaProto.VillaList.Builder villaListBuilder = VillaProto.VillaList.newBuilder();
@@ -38,7 +38,7 @@ public class ParseTribalWarsOverview {
                     VillaProto.Villa.Builder villa = VillaProto.Villa.newBuilder();
                     String villaTitle = element.text();
                     String name = villaTitle.substring(0, villaTitle.indexOf(CHAR_SPACE));
-                    String[] coord = villaTitle.substring(villaTitle.indexOf(CHAR_BRACE_START) + 1, villaTitle.indexOf(CHAR_BRACE_END)).split(COORD_SEPARATOR);
+                    String[] coord = villaTitle.substring(villaTitle.indexOf(CHAR_BRACE_START) + 1, villaTitle.indexOf(CHAR_BRACE_END)).split(COORD_SEPARATOR_REGEX);
                     int x = Integer.parseInt(coord[0]), y = Integer.parseInt(coord[1]);
                     String id = element.getElementsByTag(TAG_A).get(0).attr(ATTR_HREF); //game.php?village=10546&amp;screen=overview
                     id = id.substring(id.indexOf(CHAR_EQUAL) + 1, id.indexOf(CHAR_AND));
@@ -140,7 +140,7 @@ public class ParseTribalWarsOverview {
         return noblemen;
     }
 
-    public static int splitFractionAndGetDenominator(String fraction) {
+    private static int splitFractionAndGetDenominator(String fraction) {
         try {
             return Integer.parseInt(fraction.split(FRACTION_SEPARATOR)[1]);
         } catch (Exception ignored) {

@@ -38,7 +38,8 @@ public class Constants {
     public static final char CHAR_COLON = ':';
     public static final char CHAR_EQUAL = '=';
     public static final char CHAR_SPACE = ' ';
-    public static final String COORD_SEPARATOR = "\\|";
+    public static final String COORD_SEPARATOR_REGEX = "\\|";
+    public static final String COORD_SEPARATOR = "|";
     public static final String FRACTION_SEPARATOR = "/";
 
     public static final String UNIT_SPEAR = "spear";
