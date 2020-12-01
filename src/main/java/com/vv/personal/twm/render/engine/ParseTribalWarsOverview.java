@@ -60,7 +60,12 @@ public class ParseTribalWarsOverview {
 
         try {
             Document document = Jsoup.parse(trainHtml);
-            Element dataTable = document.getElementsByClass(CLASS_VIS_TABLE).last();
+            Element dataTable = document.getElementsByClass(CLASS_VIS_TABLE)
+                    .stream().filter(table ->
+                            table.getElementsByClass(CLASS_BTN_RECRUIT).stream().findAny().isPresent() ||
+                                    table.getElementsByClass(CLASS_BTN_RECRUIT_DISABLED).stream().findAny().isPresent())
+                    //to consider only those tables in page which have the 'Reruit' button on them
+                    .findFirst().get();
             Elements rows = dataTable.select(TAG_TR);
             for (int i = 0; ++i < rows.size() - 1; ) { //iterating for total rows - 2
                 Element row = rows.get(i);
@@ -77,6 +82,7 @@ public class ParseTribalWarsOverview {
         } catch (Exception e) {
             LOGGER.error("Failed to properly extract units information from trainHtml. ", e);
         }
+        LOGGER.info("Troop count map: {}", troopCountMap.toString());
 
         troopers.setSp(getDataPoint(troopCountMap, UNIT_SPEAR));
         troopers.setSw(getDataPoint(troopCountMap, UNIT_SWORD));
@@ -98,37 +104,47 @@ public class ParseTribalWarsOverview {
     }
 
     public static int extractWallInfo(String wallHtml) {
+        int wallLevel = ZERO_INT;
         try {
             Document document = Jsoup.parse(wallHtml);
+            LOGGER.info("Received villa to parse: {}", document.title()); //as wall is 1st f() called in line
             String wallInfo = document.getElementsByClass(CLASS_MAIN_TABLE).get(0).text();
             wallInfo = wallInfo.substring(wallInfo.indexOf(CHAR_BRACE_START) + 1, wallInfo.indexOf(CHAR_BRACE_END))
                     .substring(LEVEL_WALL.length() + 1);
-            int wallLevel = Integer.parseInt(wallInfo);
-            LOGGER.info("Recorded wall level {}", wallLevel);
-            return wallLevel;
+            wallLevel = Integer.parseInt(wallInfo);
         } catch (Exception e) {
             LOGGER.error("Failed to extract wall information from html. ", e);
         }
-        return ZERO_INT;
+        LOGGER.info("Recorded wall level {}", wallLevel);
+        return wallLevel;
     }
 
     public static int extractNoblemenInfo(String snobHtml) {
+        int noblemen = ZERO_INT;
         try {
             Document document = Jsoup.parse(snobHtml);
-            String nobleInfo = document.getElementsByClass(CLASS_VIS_TABLE).get(0).text();
-            nobleInfo = nobleInfo.substring(nobleInfo.lastIndexOf(CHAR_COLON) + 1);
-            nobleInfo = nobleInfo.substring(nobleInfo.indexOf(CHAR_SPACE) + 1);
-            nobleInfo = nobleInfo.substring(0, nobleInfo.indexOf(CHAR_SPACE));
-            int noblemen = splitFractionAndGetDenominator(nobleInfo);
-            LOGGER.info("Recorded {} noblemen", noblemen);
-            return noblemen;
+            Elements tables = document.getElementsByClass(CLASS_VIS_TABLE);
+            if (tables.isEmpty() || !tables.get(0).text().contains("Nobleman")) {
+                LOGGER.info("Nobleman recruit not yet supported in this village.");
+            } else {
+                String nobleInfo = tables.get(0)
+                        .select(TAG_TR).get(1)
+                        .select(TAG_TD).get(4)
+                        .text();
+                noblemen = splitFractionAndGetDenominator(nobleInfo);
+            }
         } catch (Exception e) {
             LOGGER.error("Failed to extract noblemen information from html. ", e);
         }
-        return ZERO_INT;
+        LOGGER.info("Recorded {} noblemen", noblemen);
+        return noblemen;
     }
 
     public static int splitFractionAndGetDenominator(String fraction) {
-        return Integer.parseInt(fraction.split(FRACTION_SEPARATOR)[1]);
+        try {
+            return Integer.parseInt(fraction.split(FRACTION_SEPARATOR)[1]);
+        } catch (Exception ignored) {
+        }
+        return ZERO_INT;
     }
 }

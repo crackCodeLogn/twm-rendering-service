@@ -22,6 +22,8 @@ public class Constants {
     public static final String ASSETS = "/assets/";
     public static final String ATTR_HREF = "href";
     public static final String ATTR_DATA_UNIT = "data-unit";
+    public static final String CLASS_BTN_RECRUIT = "btn-recruit";
+    public static final String CLASS_BTN_RECRUIT_DISABLED = "btn-recruit-disabled"; //due to farm out of space
     public static final String CLASS_QUICKEDIT_CONTENT = "quickedit-content";
     public static final String CLASS_MAIN_TABLE = "main";
     public static final String CLASS_VIS_TABLE = "vis";

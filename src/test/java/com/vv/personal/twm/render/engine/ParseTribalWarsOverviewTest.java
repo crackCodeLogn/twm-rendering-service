@@ -61,16 +61,43 @@ public class ParseTribalWarsOverviewTest {
     }
 
     @Test
+    public void testExtractNoblemenInfo2() {
+        String html = readFileFromLocation("src/test/resources/tw_snob2.html");
+        int noblemen = extractNoblemenInfo(html);
+        assertEquals(0, noblemen);
+    }
+
+    @Test
+    public void testExtractNoblemenInfo3() {
+        String html = readFileFromLocation("src/test/resources/tw_snob3.html");
+        int noblemen = extractNoblemenInfo(html);
+        assertEquals(0, noblemen);
+    }
+
+    @Test
     public void testExtractTroopsInfo() {
         String html = readFileFromLocation("src/test/resources/tw_train.html");
         VillaProto.Troops troops = extractTroopsInfo(html,
                 extractWallInfo(readFileFromLocation("src/test/resources/tw_wall.html")),
                 extractNoblemenInfo(readFileFromLocation("src/test/resources/tw_snob.html")));
 
+        System.out.println(troops);
         assertEquals(5205, troops.getAx());
         assertEquals(2392, troops.getLc());
         assertEquals(352, troops.getRm());
         assertEquals(101, troops.getCt());
+        assertEquals(0, troops.getHc());
+    }
+
+    @Test
+    public void testExtractTroopsInfo2() {
+        String html = readFileFromLocation("src/test/resources/tw_train2.html");
+        VillaProto.Troops troops = extractTroopsInfo(html,
+                extractWallInfo(readFileFromLocation("src/test/resources/tw_wall.html")),
+                extractNoblemenInfo(readFileFromLocation("src/test/resources/tw_snob.html")));
+
+        System.out.println(troops);
+        assertEquals(1018, troops.getLc());
     }
 
 }
