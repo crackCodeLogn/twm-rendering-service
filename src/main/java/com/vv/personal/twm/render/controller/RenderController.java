@@ -20,6 +20,10 @@ import static com.vv.personal.twm.render.constants.Constants.EMPTY_STR;
 /**
  * @author Vivek
  * @since 17/11/20
+ * <p>
+ * Note: As of 2020-12-06, was experiencing v.slow startup of Render-server in particular.
+ * Found the explanation here: https://github.com/springfox/springfox/issues/2881#issuecomment-524884972
+ * Switching to springfox-boot-starter's 3.0.0 swagger mitigated this issue and startup reduced from 150+s to < 20s
  */
 @RestController("RenderController")
 @RequestMapping("/render")
