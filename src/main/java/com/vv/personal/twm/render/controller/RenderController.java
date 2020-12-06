@@ -45,6 +45,7 @@ public class RenderController {
     }
 
     @PostMapping("/tw/parse/overview")
+    //@ApiOperation(value = "/tw/parse/overview", hidden = true, httpMethod = "POST") //attempt later on
     public VillaProto.VillaList parseTribalWarsOverviewHtml(@RequestBody String htmlData) {
         try {
             return ParseTribalWars.generateVillaList(htmlData);
@@ -55,6 +56,7 @@ public class RenderController {
     }
 
     @PostMapping("/tw/parse/screens") //parsing wall, train and snob together -- hard binding!
+    //@ApiOperation(value = "/tw/parse/screens", hidden = true, httpMethod = "POST") //parsing wall, train and snob together -- hard binding!
     public VillaProto.Troops parseTribalWarsScreensHtml(@RequestBody HtmlDataParcelProto.Parcel parcel) {
         try {
             int wallLevel = ParseTribalWars.extractWallInfo(parcel.getWallPageSource());
