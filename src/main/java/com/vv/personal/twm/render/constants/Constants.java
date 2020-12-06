@@ -52,4 +52,6 @@ public class Constants {
     public static final String UNIT_HCAV = "heavy";
     public static final String UNIT_RAM = "ram";
     public static final String UNIT_CAT = "catapult";
+
+    public static final String TEXT_NOBLEMAN_TABLE_LOCATOR = "Here/";
 }

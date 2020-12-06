@@ -124,10 +124,13 @@ public class ParseTribalWars {
         try {
             Document document = Jsoup.parse(snobHtml);
             Elements tables = document.getElementsByClass(CLASS_VIS_TABLE);
-            if (tables.isEmpty() || !tables.get(0).text().contains("Nobleman")) {
+            if (tables.isEmpty()) {
                 LOGGER.info("Nobleman recruit not yet supported in this village.");
             } else {
-                String nobleInfo = tables.get(0)
+                Element reqTable = tables.stream()
+                        .filter(table -> table.text().contains(TEXT_NOBLEMAN_TABLE_LOCATOR))
+                        .findFirst().get();
+                String nobleInfo = reqTable
                         .select(TAG_TR).get(1)
                         .select(TAG_TD).get(4)
                         .text();

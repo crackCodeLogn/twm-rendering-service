@@ -75,6 +75,13 @@ public class ParseTribalWarsTest {
     }
 
     @Test
+    public void testExtractNoblemenInfo4() {
+        String html = readFileFromLocation("src/test/resources/tw_snob4.html");
+        int noblemen = extractNoblemenInfo(html);
+        assertEquals(1, noblemen);
+    }
+
+    @Test
     public void testExtractTroopsInfo() {
         String html = readFileFromLocation("src/test/resources/tw_train.html");
         VillaProto.Troops troops = extractTroopsInfo(html,
