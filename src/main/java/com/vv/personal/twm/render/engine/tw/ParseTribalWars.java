@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.vv.personal.twm.render.constants.Constants.*;
 
@@ -124,13 +125,13 @@ public class ParseTribalWars {
         try {
             Document document = Jsoup.parse(snobHtml);
             Elements tables = document.getElementsByClass(CLASS_VIS_TABLE);
-            if (tables.isEmpty()) {
+            Optional<Element> reqTable = tables.stream()
+                    .filter(table -> table.text().contains(TEXT_NOBLEMAN_TABLE_LOCATOR))
+                    .findFirst();
+            if (tables.isEmpty() || reqTable.isEmpty()) {
                 LOGGER.info("Nobleman recruit not yet supported in this village.");
             } else {
-                Element reqTable = tables.stream()
-                        .filter(table -> table.text().contains(TEXT_NOBLEMAN_TABLE_LOCATOR))
-                        .findFirst().get();
-                String nobleInfo = reqTable
+                String nobleInfo = reqTable.get()
                         .select(TAG_TR).get(1)
                         .select(TAG_TD).get(4)
                         .text();
