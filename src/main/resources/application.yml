@@ -1,6 +1,10 @@
 spring:
   application:
     name: twm-rendering-service
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
 
 server:
   port: ${EUREKA_REGISTRATION_PORT:0}
