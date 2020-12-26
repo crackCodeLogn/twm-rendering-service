@@ -72,7 +72,7 @@ public class RenderController {
     public VillaProto.Villa parseTribalWarsFarmScreenHtml(@RequestBody HtmlDataParcelProto.Parcel parcel) {
         try {
             String farmStrength = ParseTribalWars.extractFarmStrengthInfoFromHtml(parcel.getFarmPageSource());
-            return ParseTribalWars.extractFarmStrengthInfo(farmStrength);
+            return ParseTribalWars.inflateFarmStrengthInfo(farmStrength);
         } catch (Exception e) {
             LOGGER.error("Failed to parse overview page. ", e);
         }

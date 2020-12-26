@@ -114,7 +114,7 @@ public class ParseTribalWarsTest {
         System.out.println(farmStrength);
         assertEquals("24000/24000", farmStrength);
 
-        VillaProto.Villa villa = extractFarmStrengthInfo(html);
+        VillaProto.Villa villa = inflateFarmStrengthInfo(farmStrength);
         System.out.println(villa);
         assertEquals("24000/24000", villa.getFarmStrength());
     }

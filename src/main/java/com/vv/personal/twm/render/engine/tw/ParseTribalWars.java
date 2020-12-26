@@ -152,8 +152,7 @@ public class ParseTribalWars {
         return ZERO_INT;
     }
 
-    public static VillaProto.Villa extractFarmStrengthInfo(String farmHtml) {
-        String farmStrength = extractFarmStrengthInfoFromHtml(farmHtml);
+    public static VillaProto.Villa inflateFarmStrengthInfo(String farmStrength) {
         return VillaProto.Villa.newBuilder()
                 .setFarmStrength(farmStrength)
                 .build();
