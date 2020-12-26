@@ -107,4 +107,16 @@ public class ParseTribalWarsTest {
         assertEquals(1018, troops.getLc());
     }
 
+    @Test
+    public void testExtractFarmStrength() {
+        String html = readFileFromLocation("src/test/resources/tw_farm1.html");
+        String farmStrength = extractFarmStrengthInfoFromHtml(html);
+        System.out.println(farmStrength);
+        assertEquals("24000/24000", farmStrength);
+
+        VillaProto.Villa villa = extractFarmStrengthInfo(html);
+        System.out.println(villa);
+        assertEquals("24000/24000", villa.getFarmStrength());
+    }
+
 }

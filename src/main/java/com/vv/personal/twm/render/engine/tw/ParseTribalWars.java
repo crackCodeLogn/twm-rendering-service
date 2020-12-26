@@ -151,4 +151,30 @@ public class ParseTribalWars {
         }
         return ZERO_INT;
     }
+
+    public static VillaProto.Villa extractFarmStrengthInfo(String farmHtml) {
+        String farmStrength = extractFarmStrengthInfoFromHtml(farmHtml);
+        return VillaProto.Villa.newBuilder()
+                .setFarmStrength(farmStrength)
+                .build();
+    }
+
+    public static String extractFarmStrengthInfoFromHtml(String farmHtml) {
+        String farmStrength = EMPTY_STR;
+        try {
+            Document document = Jsoup.parse(farmHtml);
+            Elements tables = document.getElementsByClass("smallPadding");
+            Optional<Element> reqTable = tables.stream().findFirst();
+            if (reqTable.isPresent()) {
+                int tdFarmCell = reqTable.get().select(TAG_TD).size() - 1;
+                farmStrength = reqTable.get().select(TAG_TD).get(tdFarmCell).text(); //24000/24000
+            } else {
+                LOGGER.error("Failed to obtain the td cell for farm level info.");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract farm information from html. ", e);
+        }
+        LOGGER.info("Recorded {} farm strength", farmStrength);
+        return farmStrength;
+    }
 }

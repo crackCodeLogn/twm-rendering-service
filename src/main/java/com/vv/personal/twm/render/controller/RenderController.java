@@ -68,6 +68,17 @@ public class RenderController {
         return VillaProto.Troops.newBuilder().build();
     }
 
+    @PostMapping("/tw/parse/screens/farm") //parsing farm
+    public VillaProto.Villa parseTribalWarsFarmScreenHtml(@RequestBody HtmlDataParcelProto.Parcel parcel) {
+        try {
+            String farmStrength = ParseTribalWars.extractFarmStrengthInfoFromHtml(parcel.getFarmPageSource());
+            return ParseTribalWars.extractFarmStrengthInfo(farmStrength);
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse overview page. ", e);
+        }
+        return VillaProto.Villa.newBuilder().build();
+    }
+
     @PostMapping("/tw/render/villas")
     public String renderTribalWarsVillas(@RequestBody VillaProto.VillaList villas) {
         try {
