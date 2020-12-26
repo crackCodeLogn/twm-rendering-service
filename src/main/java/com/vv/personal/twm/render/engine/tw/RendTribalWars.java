@@ -37,7 +37,8 @@ public class RendTribalWars extends Rend {
                 "Ram",
                 "Cat",
                 "Palad",
-                "Noble");
+                "Noble",
+                "Farm");
 
         AtomicInteger counter = new AtomicInteger(0);
         villas.getVillasList().forEach(villa -> {
@@ -62,7 +63,8 @@ public class RendTribalWars extends Rend {
                         villa.getTroops().getRm(),
                         villa.getTroops().getCt(),
                         villa.getTroops().getPd(),
-                        villa.getTroops().getNb()
+                        villa.getTroops().getNb(),
+                        villa.getFarmStrength()
                 );
             } catch (Exception e) {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", villa, e);
