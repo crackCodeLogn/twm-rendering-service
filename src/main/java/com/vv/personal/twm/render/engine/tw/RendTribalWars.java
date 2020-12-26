@@ -29,7 +29,7 @@ public class RendTribalWars extends Rend {
                 "Spear",
                 "Sword",
                 "Axe",
-                "Archer",
+                "Arch",
                 "Scout",
                 "Lcav",
                 "M.Arc",
