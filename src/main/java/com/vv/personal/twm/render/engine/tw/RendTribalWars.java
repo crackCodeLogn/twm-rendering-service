@@ -36,7 +36,7 @@ public class RendTribalWars extends Rend {
                 "Hcav",
                 "Ram",
                 "Cat",
-                "Paladin",
+                "Palad",
                 "Noble");
 
         AtomicInteger counter = new AtomicInteger(0);
