@@ -125,6 +125,7 @@ public class ParseTribalWarsTest {
     public void testExtractSupportAcquired() {
         String html = readFileFromLocation("src/test/resources/tw.reps.support.acquired.html");
         SupportReportProto.SupportReport supportReport = extractSupportDetails(html);
+
         System.out.println(supportReport);
         assertEquals(SupportReportProto.SupportReportType.ACQUIRED, supportReport.getSupportReportType());
         assertEquals("Oldmangramps", supportReport.getFrom());
@@ -148,14 +149,26 @@ public class ParseTribalWarsTest {
     public void testExtractSupportReportLinks() {
         String html = readFileFromLocation("src/test/resources/tw.reps.support.links.1.html");
         List<String> list = extractSupportReportLinks(html);
+
         System.out.println(list);
         assertEquals(12, list.size());
         assertEquals("/game.php?village=11639&screen=report&mode=support&group_id=0&view=14191188", list.get(1));
 
         html = readFileFromLocation("src/test/resources/tw.reps.support.links.2.html");
         list = extractSupportReportLinks(html);
+
         System.out.println(list);
         assertEquals(12, list.size());
         assertEquals("/game.php?village=11639&screen=report&mode=support&group_id=0&view=14191167", list.get(1));
+    }
+
+    @Test
+    public void testExtractSupportReportPagesLinks() {
+        String html = readFileFromLocation("src/test/resources/tw.reps.support.links.1.html");
+        List<String> list = extractSupportReportPagesLinks(html);
+
+        System.out.println(list);
+        assertEquals(9, list.size());
+        assertEquals("/game.php?village=11639&screen=report&mode=support&from=48", list.get(3));
     }
 }

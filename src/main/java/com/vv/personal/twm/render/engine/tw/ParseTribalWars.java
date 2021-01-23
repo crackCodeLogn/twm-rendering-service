@@ -281,4 +281,27 @@ public class ParseTribalWars {
         LOGGER.info("Recorded support detail => {}", reportLinks.size());
         return reportLinks;
     }
+
+    public static List<String> extractSupportReportPagesLinks(String supportReportHtml) {
+        List<String> reportPagesLinks = new ArrayList<>();
+        try {
+            Document document = Jsoup.parse(supportReportHtml);
+            Optional<Element> reqTable = document.getElementsByClass(CLASS_VIS_TABLE).stream()
+                    .filter(table -> table.select(TAG_TR).size() == 1 && table.attributes().size() == 2).findFirst();
+
+            if (reqTable.isPresent()) {
+                reportPagesLinks = reqTable.get().select(TAG_TR).get(0)
+                        .select(TAG_TD).get(0)
+                        .getElementsByTag(TAG_A)
+                        .stream().map(element -> element.attr(ATTR_HREF))
+                        .collect(Collectors.toList());
+            } else {
+                LOGGER.error("Failed to obtain the report pages links.");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract report links from supplied html. ", e);
+        }
+        LOGGER.info("Recorded report pages links => {}", reportPagesLinks.size());
+        return reportPagesLinks;
+    }
 }

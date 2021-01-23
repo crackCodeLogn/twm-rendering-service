@@ -125,4 +125,14 @@ public class RenderController {
         }
         return new ArrayList<>();
     }
+
+    @PostMapping("/tw/parse/page/supportReportPagesLinks")
+    public List<String> parseTribalWarsSupportReportsPagesLinks(@RequestBody HtmlDataParcelProto.Parcel parcel) {
+        try {
+            return ParseTribalWars.extractSupportReportPagesLinks(parcel.getSupportReportSource());
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse support report pages links. ", e);
+        }
+        return new ArrayList<>();
+    }
 }
