@@ -3,6 +3,7 @@ package com.vv.personal.twm.render.controller;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
 import com.vv.personal.twm.artifactory.generated.tw.HtmlDataParcelProto;
+import com.vv.personal.twm.artifactory.generated.tw.SupportReportProto;
 import com.vv.personal.twm.artifactory.generated.tw.VillaProto;
 import com.vv.personal.twm.render.engine.RendBank;
 import com.vv.personal.twm.render.engine.RendFixedDeposit;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.vv.personal.twm.render.constants.Constants.EMPTY_STR;
 
@@ -87,5 +91,38 @@ public class RenderController {
             LOGGER.error("Failed to render villas. ", e);
         }
         return EMPTY_STR;
+    }
+
+    /*@PostMapping("/tw/parse/scavenge") //parsing wall, train and snob together -- hard binding!
+    //@ApiOperation(value = "/tw/parse/screens", hidden = true, httpMethod = "POST") //parsing wall, train and snob together -- hard binding!
+    public VillaProto.Troops parseTribalWarsScavengeHtml(@RequestBody HtmlDataParcelProto.Parcel parcel) {
+        try {
+            int wallLevel = ParseTribalWars.extractWallInfo(parcel.getWallPageSource());
+            int noblemen = ParseTribalWars.extractNoblemenInfo(parcel.getSnobPageSource());
+            return ParseTribalWars.extractTroopsInfo(parcel.getTrainPageSource(), wallLevel, noblemen);
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse overview page. ", e);
+        }
+        return VillaProto.Troops.newBuilder().build();
+    }*/
+
+    @PostMapping("/tw/parse/report/support")
+    public SupportReportProto.SupportReport parseTribalWarsSupportReport(@RequestBody HtmlDataParcelProto.Parcel parcel) {
+        try {
+            return ParseTribalWars.extractSupportDetails(parcel.getSupportReportSource());
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse support report page. ", e);
+        }
+        return SupportReportProto.SupportReport.newBuilder().build();
+    }
+
+    @PostMapping("/tw/parse/page/supportReports")
+    public List<String> parseTribalWarsSupportReportLinks(@RequestBody HtmlDataParcelProto.Parcel parcel) {
+        try {
+            return ParseTribalWars.extractSupportReportLinks(parcel.getSupportReportSource());
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse support report page links. ", e);
+        }
+        return new ArrayList<>();
     }
 }

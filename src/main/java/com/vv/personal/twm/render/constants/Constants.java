@@ -31,6 +31,7 @@ public class Constants {
     public static final String TAG_A = "a";
     public static final String TAG_TR = "tr";
     public static final String TAG_TD = "td";
+    public static final String TAG_TH = "th";
 
     public static final char CHAR_AND = '&';
     public static final char CHAR_BRACE_START = '(';
@@ -52,6 +53,8 @@ public class Constants {
     public static final String UNIT_HCAV = "heavy";
     public static final String UNIT_RAM = "ram";
     public static final String UNIT_CAT = "catapult";
+    public static final String UNIT_PALAD = "knight";
+    public static final String UNIT_NOBLE = "snob";
 
     public static final String TEXT_NOBLEMAN_TABLE_LOCATOR = "Here/";
 }

@@ -1,5 +1,6 @@
 package com.vv.personal.twm.render.engine.tw;
 
+import com.vv.personal.twm.artifactory.generated.tw.SupportReportProto;
 import com.vv.personal.twm.artifactory.generated.tw.VillaProto;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,9 +9,8 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.vv.personal.twm.render.constants.Constants.*;
 
@@ -175,5 +175,110 @@ public class ParseTribalWars {
         }
         LOGGER.info("Recorded {} farm strength", farmStrength);
         return farmStrength;
+    }
+
+    private static SupportReportProto.Troops extractSupportTroopsTransacted(String supportReportHtml) {
+        SupportReportProto.Troops.Builder troopers = SupportReportProto.Troops.newBuilder();
+        Map<String, Integer> troopCountMap = new HashMap<>();
+
+        try {
+            Document document = Jsoup.parse(supportReportHtml);
+            Elements tables = document.getElementsByClass(CLASS_VIS_TABLE);
+            Optional<Element> reqTable = tables.stream()
+                    .filter(table -> table.select(TAG_TR).size() == 2 && table.attributes().size() == 1)
+                    .findFirst();
+            if (reqTable.isPresent()) {
+                Element row = reqTable.get().select(TAG_TR).get(1);
+                Elements columns = row.select(TAG_TD);
+                for (int i = -1; ++i < columns.size(); ) {
+                    try {
+                        String unit = columns.get(i).attr("class")
+                                .replaceAll("hidden", EMPTY_STR)
+                                .replaceAll("unit-item", EMPTY_STR)
+                                .replaceAll("-", EMPTY_STR).trim();
+                        Integer units = Integer.parseInt(columns.get(i).text().trim());
+                        troopCountMap.put(unit, units);
+                    } catch (Exception e) {
+                        LOGGER.error("Failed to obtain the td cell for support data acquisition.");
+                    }
+                }
+                LOGGER.info(troopCountMap.toString());
+            } else {
+                LOGGER.error("Failed to obtain required table");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract support troops information from html. ", e);
+        }
+        troopers.setSp(getDataPoint(troopCountMap, UNIT_SPEAR));
+        troopers.setSw(getDataPoint(troopCountMap, UNIT_SWORD));
+        troopers.setAx(getDataPoint(troopCountMap, UNIT_AXE));
+        troopers.setAr(getDataPoint(troopCountMap, UNIT_ARCHER));
+        troopers.setSu(getDataPoint(troopCountMap, UNIT_SCOUT));
+        troopers.setLc(getDataPoint(troopCountMap, UNIT_LCAV));
+        troopers.setMa(getDataPoint(troopCountMap, UNIT_MTD_ARCHER));
+        troopers.setHc(getDataPoint(troopCountMap, UNIT_HCAV));
+        troopers.setRm(getDataPoint(troopCountMap, UNIT_RAM));
+        troopers.setCt(getDataPoint(troopCountMap, UNIT_CAT));
+        troopers.setCt(getDataPoint(troopCountMap, UNIT_PALAD));
+        return troopers.build();
+    }
+
+    private static SupportReportProto.SupportReport.Builder extractSupportReportData(String supportReportHtml) {
+        SupportReportProto.SupportReport.Builder supportReportBuilder = SupportReportProto.SupportReport.newBuilder();
+
+        try {
+            Document document = Jsoup.parse(supportReportHtml);
+            Elements tables = document.getElementsByClass(CLASS_VIS_TABLE);
+            Optional<Element> reqTable = tables.stream()
+                    .filter(table -> table.select(TAG_TR).size() >= 3 && table.attributes().size() == 1)
+                    .findFirst();
+            if (reqTable.isPresent()) {
+                supportReportBuilder.setReportSubject(reqTable.get().select(TAG_TR).get(0)
+                        .select(TAG_TH).get(1).text());
+                supportReportBuilder.setReportTime(reqTable.get().select(TAG_TR).get(1)
+                        .select(TAG_TD).get(1).text());
+                supportReportBuilder.setSupportReportType(decideSupportReportType(supportReportBuilder.getReportSubject()));
+
+                Element internalTable = reqTable.get().getElementsByTag("table").get(1);
+                Elements internalRows = internalTable.select(TAG_TR);
+                supportReportBuilder.setFrom(internalRows.get(0).select(TAG_TH).get(1).text());
+                supportReportBuilder.setOrigin(internalRows.get(1).select(TAG_TD).get(1).text());
+                supportReportBuilder.setTo(internalRows.get(2).select(TAG_TH).get(1).text());
+                supportReportBuilder.setDestination(internalRows.get(3).select(TAG_TD).get(1).text());
+            } else {
+                LOGGER.error("Failed to obtain required table(s)");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract support report information from html. ", e);
+        }
+        return supportReportBuilder;
+    }
+
+    private static SupportReportProto.SupportReportType decideSupportReportType(String supportReportSubject) {
+        if (supportReportSubject.matches(".* supports .*")) return SupportReportProto.SupportReportType.ACQUIRED;
+        else if (supportReportSubject.matches(".* has sent the support from .* back home$")) return SupportReportProto.SupportReportType.SENT_BACK;
+        return SupportReportProto.SupportReportType.UNRECOGNIZED;
+    }
+
+    public static SupportReportProto.SupportReport extractSupportDetails(String supportReportHtml) {
+        SupportReportProto.SupportReport.Builder supportReportBuilder = extractSupportReportData(supportReportHtml);
+        supportReportBuilder.setTroops(extractSupportTroopsTransacted(supportReportHtml));
+        LOGGER.info("Recorded support detail => {}", supportReportBuilder);
+        return supportReportBuilder.build();
+    }
+
+    public static List<String> extractSupportReportLinks(String supportReportHtml) {
+        List<String> reportLinks = new ArrayList<>();
+        try {
+            Document document = Jsoup.parse(supportReportHtml);
+            reportLinks = document.getElementsByClass("report-link").stream()
+                    .filter(element -> element.hasAttr("href"))
+                    .map(element -> element.attr("href"))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract report links from supplied html. ", e);
+        }
+        LOGGER.info("Recorded support detail => {}", reportLinks.size());
+        return reportLinks;
     }
 }

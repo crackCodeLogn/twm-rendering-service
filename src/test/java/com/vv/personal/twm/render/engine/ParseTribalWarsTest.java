@@ -1,5 +1,6 @@
 package com.vv.personal.twm.render.engine;
 
+import com.vv.personal.twm.artifactory.generated.tw.SupportReportProto;
 import com.vv.personal.twm.artifactory.generated.tw.VillaProto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 import static com.vv.personal.twm.render.engine.tw.ParseTribalWars.*;
 import static org.junit.Assert.assertEquals;
@@ -119,4 +121,41 @@ public class ParseTribalWarsTest {
         assertEquals("24000/24000", villa.getFarmStrength());
     }
 
+    @Test
+    public void testExtractSupportAcquired() {
+        String html = readFileFromLocation("src/test/resources/tw.reps.support.acquired.html");
+        SupportReportProto.SupportReport supportReport = extractSupportDetails(html);
+        System.out.println(supportReport);
+        assertEquals(SupportReportProto.SupportReportType.ACQUIRED, supportReport.getSupportReportType());
+        assertEquals("Oldmangramps", supportReport.getFrom());
+        assertEquals("vivekthewarrior", supportReport.getTo());
+        assertEquals(425, supportReport.getTroops().getHc());
+        assertEquals("Jan 20, 2021 11:26:02:423", supportReport.getReportTime());
+        assertEquals("Oldmangramps supports FO.SER.R73.Bakasura (584|598) K55", supportReport.getReportSubject());
+
+        html = readFileFromLocation("src/test/resources/tw.reps.support.sent.back.html");
+        supportReport = extractSupportDetails(html);
+        System.out.println(supportReport);
+        assertEquals(SupportReportProto.SupportReportType.SENT_BACK, supportReport.getSupportReportType());
+        assertEquals("vivekthewarrior", supportReport.getFrom());
+        assertEquals("Oldmangramps", supportReport.getTo());
+        assertEquals(410, supportReport.getTroops().getHc());
+        assertEquals("Jan 20, 2021 15:32:52", supportReport.getReportTime());
+        assertEquals("FO.SER.R73.Bakasura (584|598) K55 has sent the support from Gramps 013 back home", supportReport.getReportSubject());
+    }
+
+    @Test
+    public void testExtractSupportReportLinks() {
+        String html = readFileFromLocation("src/test/resources/tw.reps.support.links.1.html");
+        List<String> list = extractSupportReportLinks(html);
+        System.out.println(list);
+        assertEquals(12, list.size());
+        assertEquals("/game.php?village=11639&screen=report&mode=support&group_id=0&view=14191188", list.get(1));
+
+        html = readFileFromLocation("src/test/resources/tw.reps.support.links.2.html");
+        list = extractSupportReportLinks(html);
+        System.out.println(list);
+        assertEquals(12, list.size());
+        assertEquals("/game.php?village=11639&screen=report&mode=support&group_id=0&view=14191167", list.get(1));
+    }
 }
