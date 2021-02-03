@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.vv.personal.twm.render.constants.Constants.HTML_TABLE_END;
 import static com.vv.personal.twm.render.constants.Constants.HTML_TABLE_START;
+import static com.vv.personal.twm.render.util.DoubleFormatterUtil.formatDouble;
 
 /**
  * @author Vivek
@@ -30,6 +31,8 @@ public class RendFixedDeposit extends Rend {
                 "End Date",
                 "Months",
                 "Days",
+                "Earned Interest",
+                "Total Amount",
                 "Nominee");
 
         AtomicInteger counter = new AtomicInteger(0);
@@ -48,6 +51,8 @@ public class RendFixedDeposit extends Rend {
                         fixedDeposit.getEndDate(),
                         fixedDeposit.getMonths(),
                         fixedDeposit.getDays(),
+                        formatDouble(fixedDeposit.getExpectedInterest()),
+                        formatDouble(fixedDeposit.getExpectedAmount()),
                         fixedDeposit.getNominee());
             } catch (Exception e) {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", fixedDeposit, e);
