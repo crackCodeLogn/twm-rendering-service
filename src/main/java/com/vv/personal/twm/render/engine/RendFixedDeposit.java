@@ -36,7 +36,7 @@ public class RendFixedDeposit extends Rend {
                 "Nominee");
 
         AtomicInteger counter = new AtomicInteger(0);
-        fixedDepositList.getFixedDepositsList().forEach(fixedDeposit -> {
+        fixedDepositList.getFixedDepositList().forEach(fixedDeposit -> {
             try {
                 //LOGGER.info(fixedDeposit.toString()); //getting too verbose
                 addRowCells(table,
@@ -59,7 +59,7 @@ public class RendFixedDeposit extends Rend {
             }
         });
         table.append(HTML_TABLE_END);
-        LOGGER.info("Rendering finished for {} fixed deposits", fixedDepositList.getFixedDepositsCount());
+        LOGGER.info("Rendering finished for {} fixed deposits", fixedDepositList.getFixedDepositCount());
         return table.toString();
     }
 }
