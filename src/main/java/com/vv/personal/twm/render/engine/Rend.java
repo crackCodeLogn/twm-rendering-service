@@ -21,4 +21,25 @@ public abstract class Rend {
     protected static void addRowCells(StringBuilder table, Object... vals) {
         addCells(HTML_TABLE_CELL, table, vals);
     }
+
+
+    protected static void startRow(StringBuilder table) {
+        table.append(HTML_TABLE_ROW_START);
+    }
+
+    protected static void endRow(StringBuilder table) {
+        table.append(HTML_TABLE_ROW_END);
+    }
+
+    private static void addUnboundedCells(String FORMAT, StringBuilder table, Object... vals) {
+        for (Object val : vals) table.append(String.format(FORMAT, val));
+    }
+
+    protected static void addUnboundedHeaderCells(StringBuilder table, Object... vals) {
+        addUnboundedCells(HTML_TABLE_HEADER, table, vals);
+    }
+
+    protected static void addUnboundedRowCells(StringBuilder table, Object... vals) {
+        addUnboundedCells(HTML_TABLE_CELL, table, vals);
+    }
 }

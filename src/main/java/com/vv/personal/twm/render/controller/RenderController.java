@@ -48,6 +48,13 @@ public class RenderController {
         return RendFixedDeposit.generateTable(fixedDepositList);
     }
 
+    @PostMapping("/rendFdsWithAnnualBreakdown")
+    public String rendFdsWithAnnualBreakdown(@RequestBody FixedDepositProto.FixedDepositList fixedDepositList) {
+        if (fixedDepositList.getFixedDepositList().isEmpty()) return "FAILED - EMPTY JSON!";
+        LOGGER.info("Received string to render for FD: {}", fixedDepositList);
+        return RendFixedDeposit.generateTableWithAnnualBreakdown(fixedDepositList);
+    }
+
     @PostMapping("/tw/parse/overview")
     //@ApiOperation(value = "/tw/parse/overview", hidden = true, httpMethod = "POST") //attempt later on
     public VillaProto.VillaList parseTribalWarsOverviewHtml(@RequestBody String htmlData) {

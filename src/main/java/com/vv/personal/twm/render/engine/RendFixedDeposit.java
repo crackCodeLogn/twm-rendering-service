@@ -1,13 +1,14 @@
 package com.vv.personal.twm.render.engine;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.vv.personal.twm.render.constants.Constants.HTML_TABLE_END;
-import static com.vv.personal.twm.render.constants.Constants.HTML_TABLE_START;
+import static com.vv.personal.twm.render.constants.Constants.*;
 import static com.vv.personal.twm.render.util.DoubleFormatterUtil.formatDouble;
 
 /**
@@ -54,6 +55,57 @@ public class RendFixedDeposit extends Rend {
                         formatDouble(fixedDeposit.getExpectedInterest()),
                         formatDouble(fixedDeposit.getExpectedAmount()),
                         fixedDeposit.getNominee());
+            } catch (Exception e) {
+                LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", fixedDeposit, e);
+            }
+        });
+        table.append(HTML_TABLE_END);
+        LOGGER.info("Rendering finished for {} fixed deposits", fixedDepositList.getFixedDepositCount());
+        return table.toString();
+    }
+
+    public static String generateTableWithAnnualBreakdown(FixedDepositProto.FixedDepositList fixedDepositList) {
+        Table<String, String, FixedDepositProto.AnnualBreakdown> annualBreakdownTable = HashBasedTable.create();
+        fixedDepositList.getFixedDepositList().forEach(fixedDeposit ->
+                fixedDeposit.getAnnualBreakdownList().getAnnualBreakdownList().forEach(annualBreakdown ->
+                        annualBreakdownTable.put(fixedDeposit.getFdNumber(), annualBreakdown.getFinancialYear(), annualBreakdown)));
+        LOGGER.info("Guava table constructed: {}", annualBreakdownTable.toString());
+
+
+        final StringBuilder table = new StringBuilder(HTML_TABLE_START);
+        startRow(table);
+        addUnboundedHeaderCells(table,
+                "Number",
+                "User",
+                "FD Number (Key)",
+                "Bank IFSC",
+                "Deposit Amount",
+                "Rate of interest");
+        annualBreakdownTable.columnKeySet().forEach(fy -> addUnboundedHeaderCells(table, fy));
+        endRow(table);
+
+        AtomicInteger counter = new AtomicInteger(0);
+        fixedDepositList.getFixedDepositList().forEach(fixedDeposit -> {
+            try {
+                //LOGGER.info(fixedDeposit.toString()); //getting too verbose
+                startRow(table);
+                addUnboundedRowCells(table,
+                        counter.incrementAndGet(),
+                        fixedDeposit.getUser(),
+                        fixedDeposit.getFdNumber(),
+                        fixedDeposit.getBankIFSC(),
+                        fixedDeposit.getDepositAmount(),
+                        fixedDeposit.getRateOfInterest());
+
+                annualBreakdownTable.columnKeySet().forEach(fy -> {
+                    FixedDepositProto.AnnualBreakdown annualBreakdown = annualBreakdownTable.get(fixedDeposit.getFdNumber(), fy);
+                    String data = EMPTY_STR;
+                    if (annualBreakdown != null) {
+                        data = String.format("%.2f I| %.2f A| %d d", annualBreakdown.getExpectedInterestGained(), annualBreakdown.getExpectedAmountAccumulated(), annualBreakdown.getDaysInBetween());
+                    }
+                    addUnboundedRowCells(table, data);
+                });
+                endRow(table);
             } catch (Exception e) {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", fixedDeposit, e);
             }
