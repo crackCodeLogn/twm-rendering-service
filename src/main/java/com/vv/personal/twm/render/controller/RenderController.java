@@ -43,7 +43,7 @@ public class RenderController {
 
     @PostMapping("/rendFds")
     public String rendFds(@RequestBody FixedDepositProto.FixedDepositList fixedDepositList) {
-        if (fixedDepositList.getFixedDepositsList().isEmpty()) return "FAILED - EMPTY JSON!";
+        if (fixedDepositList.getFixedDepositList().isEmpty()) return "FAILED - EMPTY JSON!";
         LOGGER.info("Received string to render for FD: {}", fixedDepositList);
         return RendFixedDeposit.generateTable(fixedDepositList);
     }
