@@ -24,7 +24,7 @@ public class RendFixedDeposit extends Rend {
         final StringBuilder table = new StringBuilder(HTML_TABLE_START);
         addHeaderCells(table,
                 "Number",
-                "Orig User",
+                "O.Usr",
                 "User",
                 "FD Number (Key)",
                 "Cust Id",
@@ -80,7 +80,7 @@ public class RendFixedDeposit extends Rend {
         startRow(table);
         addUnboundedHeaderCells(table,
                 "Number",
-                "Orig User",
+                "O.Usr",
                 "User",
                 "FD Number (Key)",
                 "Bank IFSC",
