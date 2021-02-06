@@ -24,6 +24,7 @@ public class RendFixedDeposit extends Rend {
         final StringBuilder table = new StringBuilder(HTML_TABLE_START);
         addHeaderCells(table,
                 "Number",
+                "Orig User",
                 "User",
                 "FD Number (Key)",
                 "Cust Id",
@@ -44,6 +45,7 @@ public class RendFixedDeposit extends Rend {
                 //LOGGER.info(fixedDeposit.toString()); //getting too verbose
                 addRowCells(table,
                         counter.incrementAndGet(),
+                        fixedDeposit.getOriginalUser(),
                         fixedDeposit.getUser(),
                         fixedDeposit.getFdNumber(),
                         fixedDeposit.getCustomerId(),
@@ -78,6 +80,7 @@ public class RendFixedDeposit extends Rend {
         startRow(table);
         addUnboundedHeaderCells(table,
                 "Number",
+                "Orig User",
                 "User",
                 "FD Number (Key)",
                 "Bank IFSC",
@@ -100,6 +103,7 @@ public class RendFixedDeposit extends Rend {
                 startRow(table);
                 addUnboundedRowCells(table,
                         counter.incrementAndGet(),
+                        fixedDeposit.getOriginalUser(),
                         fixedDeposit.getUser(),
                         fixedDeposit.getFdNumber(),
                         fixedDeposit.getBankIFSC(),
@@ -126,6 +130,7 @@ public class RendFixedDeposit extends Rend {
         startRow(table);
         addUnboundedRowCells(table,
                 counter.incrementAndGet(),
+                EMPTY_STR,
                 EMPTY_STR,
                 EMPTY_STR,
                 EMPTY_STR,
