@@ -6,6 +6,8 @@ import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.vv.personal.twm.render.constants.Constants.*;
@@ -80,11 +82,18 @@ public class RendFixedDeposit extends Rend {
                 "FD Number (Key)",
                 "Bank IFSC",
                 "Deposit Amount",
-                "Rate of interest");
+                "Rate of interest",
+                "Start -> End");
         annualBreakdownTable.columnKeySet().forEach(fy -> addUnboundedHeaderCells(table, fy));
         endRow(table);
 
         AtomicInteger counter = new AtomicInteger(0);
+
+        Map<String, Double> annualInterestEarned = new LinkedHashMap<>();
+        annualBreakdownTable.columnKeySet().forEach(fy ->
+                annualInterestEarned.put(fy, annualBreakdownTable.column(fy).values().stream()
+                        .mapToDouble(FixedDepositProto.AnnualBreakdown::getExpectedInterestGained).sum()));
+
         fixedDepositList.getFixedDepositList().forEach(fixedDeposit -> {
             try {
                 //LOGGER.info(fixedDeposit.toString()); //getting too verbose
@@ -95,13 +104,15 @@ public class RendFixedDeposit extends Rend {
                         fixedDeposit.getFdNumber(),
                         fixedDeposit.getBankIFSC(),
                         fixedDeposit.getDepositAmount(),
-                        fixedDeposit.getRateOfInterest());
+                        fixedDeposit.getRateOfInterest(),
+                        String.format("%s -> %s : %dm%dd", fixedDeposit.getStartDate(), fixedDeposit.getEndDate(), fixedDeposit.getMonths(), fixedDeposit.getDays()));
 
                 annualBreakdownTable.columnKeySet().forEach(fy -> {
                     FixedDepositProto.AnnualBreakdown annualBreakdown = annualBreakdownTable.get(fixedDeposit.getFdNumber(), fy);
                     String data = EMPTY_STR;
                     if (annualBreakdown != null) {
-                        data = String.format("%.2f I| %.2f A| %d d", annualBreakdown.getExpectedInterestGained(), annualBreakdown.getExpectedAmountAccumulated(), annualBreakdown.getDaysInBetween());
+                        data = String.format("%s I | %s A | %d d", formatDouble(annualBreakdown.getExpectedInterestGained()),
+                                formatDouble(annualBreakdown.getExpectedAmountAccumulated()), annualBreakdown.getDaysInBetween());
                     }
                     addUnboundedRowCells(table, data);
                 });
@@ -110,6 +121,19 @@ public class RendFixedDeposit extends Rend {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", fixedDeposit, e);
             }
         });
+
+        //agg row
+        startRow(table);
+        addUnboundedRowCells(table,
+                counter.incrementAndGet(),
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR,
+                fixedDepositList.getFixedDepositList().stream().mapToDouble(FixedDepositProto.FixedDeposit::getDepositAmount).sum(),
+                EMPTY_STR,
+                EMPTY_STR);
+        annualInterestEarned.forEach((fy, interest) -> addUnboundedRowCells(table, formatDouble(interest)));
+        endRow(table);
         table.append(HTML_TABLE_END);
         LOGGER.info("Rendering finished for {} fixed deposits", fixedDepositList.getFixedDepositCount());
         return table.toString();
