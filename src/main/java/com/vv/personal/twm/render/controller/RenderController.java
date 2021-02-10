@@ -142,4 +142,16 @@ public class RenderController {
         }
         return new ArrayList<>();
     }
+
+    @PostMapping("/tw/parse/academy/coinMintingCapacity")
+    public VillaProto.Villa parseTribalWarsCoinMintingCapacity(@RequestBody HtmlDataParcelProto.Parcel parcel) {
+        VillaProto.Villa.Builder populatedVillaInfo = VillaProto.Villa.newBuilder();
+        try {
+            populatedVillaInfo = ParseTribalWars.extractCoinMintingCapacity(parcel.getSnobPageSource());
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse support report pages links. ", e);
+        }
+        return populatedVillaInfo.build();
+    }
+
 }

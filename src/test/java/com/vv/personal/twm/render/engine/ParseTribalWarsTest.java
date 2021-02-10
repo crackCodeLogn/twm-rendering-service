@@ -171,4 +171,15 @@ public class ParseTribalWarsTest {
         assertEquals(9, list.size());
         assertEquals("/game.php?village=11639&screen=report&mode=support&from=48", list.get(3));
     }
+
+    @Test
+    public void testExtractCoinMintingCapacityDetails() {
+        String html = readFileFromLocation("src/test/resources/tw.snob.coin.minter.html");
+        VillaProto.Villa.Builder villa = extractCoinMintingCapacity(html);
+        System.out.println(villa);
+        assertEquals(8, villa.getCoinMintingCapacity());
+        assertEquals("24000/24000", villa.getFarmStrength());
+        assertEquals(190534L, villa.getResources().getCurrentWood());
+        assertEquals(400000L, villa.getResources().getWarehouseCapacity());
+    }
 }

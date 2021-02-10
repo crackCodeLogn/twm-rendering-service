@@ -304,4 +304,44 @@ public class ParseTribalWars {
         LOGGER.info("Recorded report pages links => {}", reportPagesLinks.size());
         return reportPagesLinks;
     }
+
+    public static VillaProto.Villa.Builder extractCoinMintingCapacity(String snobHtml) {
+        VillaProto.Villa.Builder villa = VillaProto.Villa.newBuilder();
+        VillaProto.Resources.Builder resources = VillaProto.Resources.newBuilder();
+        String farmStrength = EMPTY_STR;
+        int maxMintableCoins = ZERO_INT;
+        try {
+            Document document = Jsoup.parse(snobHtml);
+            Elements tables = document.getElementsByClass("smallPadding");
+            Optional<Element> reqTable = tables.stream().findFirst();
+            if (reqTable.isPresent()) {
+                Map<String, String> collectedData = new HashMap<>();
+                reqTable.get().select(TAG_TR).get(0).select(TAG_TD).stream()
+                        .filter(element -> !element.attr(CLASS).contains("icon-box"))
+                        .forEach(element -> collectedData.put(element.select(SPAN).attr(ID), element.text()));
+                resources.setCurrentClay(Long.parseLong(collectedData.getOrDefault("stone", EMPTY_LONG_STR)));
+                resources.setCurrentWood(Long.parseLong(collectedData.getOrDefault("wood", EMPTY_LONG_STR)));
+                resources.setCurrentIron(Long.parseLong(collectedData.getOrDefault("iron", EMPTY_LONG_STR)));
+                resources.setWarehouseCapacity(Long.parseLong(collectedData.getOrDefault("storage", EMPTY_LONG_STR)));
+
+                farmStrength = collectedData.getOrDefault("pop_current_label", EMPTY_LONG_STR);
+                maxMintableCoins = Integer.parseInt(stripOutNonNumerics(document.getElementById("coin_mint_fill_max").text()));
+            } else {
+                LOGGER.error("Failed to obtain the resources info for villa");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract resources info from html. ", e);
+        }
+        villa.setResources(resources.build());
+        villa.setFarmStrength(farmStrength);
+        villa.setCoinMintingCapacity(maxMintableCoins);
+        LOGGER.info("Recorded info for villa: {}", villa);
+        return villa;
+    }
+
+    private static String stripOutNonNumerics(String data) {
+        StringBuilder result = new StringBuilder();
+        for (Character character : data.toCharArray()) if (Character.isDigit(character)) result.append(character);
+        return result.toString();
+    }
 }

@@ -7,7 +7,10 @@ package com.vv.personal.twm.render.constants;
 public class Constants {
 
     public static final String EMPTY_STR = "";
+    public static final String EMPTY_LONG_STR = "0";
     public static final Integer ZERO_INT = 0;
+    public static final Long ZERO_LONG = 0L;
+    public static final Double ZERO_DOUBLE = 0.0;
 
     public static final String LEVEL_WALL = "Level";
 
@@ -32,6 +35,9 @@ public class Constants {
     public static final String TAG_TR = "tr";
     public static final String TAG_TD = "td";
     public static final String TAG_TH = "th";
+    public static final String SPAN = "span";
+    public static final String ID = "id";
+    public static final String CLASS = "class";
 
     public static final char CHAR_AND = '&';
     public static final char CHAR_BRACE_START = '(';
