@@ -325,7 +325,7 @@ public class ParseTribalWars {
                 resources.setWarehouseCapacity(Long.parseLong(collectedData.getOrDefault("storage", EMPTY_LONG_STR)));
 
                 farmStrength = collectedData.getOrDefault("pop_current_label", EMPTY_LONG_STR);
-                maxMintableCoins = Integer.parseInt(stripOutNonNumerics(document.getElementById("coin_mint_fill_max").text()));
+                maxMintableCoins = parseMaxPermittedCoinsMintage(stripOutNonNumerics(safeGetElement(document.getElementById("coin_mint_fill_max"))));
             } else {
                 LOGGER.error("Failed to obtain the resources info for villa");
             }
@@ -339,9 +339,25 @@ public class ParseTribalWars {
         return villa;
     }
 
+    private static Integer parseMaxPermittedCoinsMintage(String data) {
+        try {
+            return Integer.parseInt(data);
+        } catch (Exception e) {
+            return ZERO_INT;
+        }
+    }
+
     private static String stripOutNonNumerics(String data) {
         StringBuilder result = new StringBuilder();
         for (Character character : data.toCharArray()) if (Character.isDigit(character)) result.append(character);
         return result.toString();
+    }
+
+    private static String safeGetElement(Element element) {
+        try {
+            return element.text();
+        } catch (NullPointerException e) {
+            return EMPTY_LONG_STR;
+        }
     }
 }

@@ -181,5 +181,12 @@ public class ParseTribalWarsTest {
         assertEquals("24000/24000", villa.getFarmStrength());
         assertEquals(190534L, villa.getResources().getCurrentWood());
         assertEquals(400000L, villa.getResources().getWarehouseCapacity());
+
+        html = readFileFromLocation("src/test/resources/tw.snob.coin.minter2.html");
+        villa = extractCoinMintingCapacity(html);
+        System.out.println(villa);
+        assertEquals(0, villa.getCoinMintingCapacity());
+        assertEquals("20649/24000", villa.getFarmStrength());
+        assertEquals(400000L, villa.getResources().getWarehouseCapacity());
     }
 }
