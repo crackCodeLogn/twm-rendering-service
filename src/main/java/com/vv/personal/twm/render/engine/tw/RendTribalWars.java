@@ -5,6 +5,8 @@ import com.vv.personal.twm.render.engine.Rend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.vv.personal.twm.render.constants.Constants.*;
@@ -18,7 +20,14 @@ public class RendTribalWars extends Rend {
 
     public static String renderVillas(VillaProto.VillaList villas) {
         final StringBuilder table = new StringBuilder(HTML_TABLE_START);
-        addHeaderCells(table,
+        Set<String> extraDoubleKeys = new HashSet<>(), extraStringKeys = new HashSet<>(), extraIntKeys = new HashSet<>();
+        villas.getVillasList().forEach(villa -> {
+            extraDoubleKeys.addAll(villa.getExtraDoublesMap().keySet());
+            extraStringKeys.addAll(villa.getExtraStringsMap().keySet());
+            extraIntKeys.addAll(villa.getExtraIntsMap().keySet());
+        });
+        startRow(table);
+        addUnboundedHeaderCells(table,
                 "Number",
                 "World",
                 "Name",
@@ -39,12 +48,17 @@ public class RendTribalWars extends Rend {
                 "Palad",
                 "Noble",
                 "Farm");
+        extraDoubleKeys.forEach(key -> addUnboundedHeaderCells(table, key));
+        extraStringKeys.forEach(key -> addUnboundedHeaderCells(table, key));
+        extraIntKeys.forEach(key -> addUnboundedHeaderCells(table, key));
+        endRow(table);
 
         AtomicInteger counter = new AtomicInteger(0);
         villas.getVillasList().forEach(villa -> {
             try {
                 //LOGGER.info(villa.toString()); //getting too verbose
-                addRowCells(table,
+                startRow(table);
+                addUnboundedRowCells(table,
                         counter.incrementAndGet(),
                         villa.getWorld(),
                         villa.getName(),
@@ -66,6 +80,10 @@ public class RendTribalWars extends Rend {
                         villa.getTroops().getNb(),
                         villa.getFarmStrength()
                 );
+                extraDoubleKeys.forEach(key -> addUnboundedRowCells(table, villa.getExtraDoublesMap().getOrDefault(key, ZERO_DOUBLE)));
+                extraStringKeys.forEach(key -> addUnboundedRowCells(table, villa.getExtraStringsMap().getOrDefault(key, EMPTY_STR)));
+                extraIntKeys.forEach(key -> addUnboundedRowCells(table, villa.getExtraIntsMap().getOrDefault(key, ZERO_INT)));
+                endRow(table);
             } catch (Exception e) {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", villa, e);
             }
