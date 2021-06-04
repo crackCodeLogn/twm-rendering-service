@@ -189,4 +189,17 @@ public class ParseTribalWarsTest {
         assertEquals("20649/24000", villa.getFarmStrength());
         assertEquals(400000L, villa.getResources().getWarehouseCapacity());
     }
+
+    @Test
+    public void testExtractMarketInfo() {
+        String html = readFileFromLocation("src/test/resources/tw.market.trade.html");
+        VillaProto.Villa villaInfo = extractMarketInfo(html);
+
+        System.out.println(villaInfo);
+        assertEquals(46, villaInfo.getAvailableMerchants());
+        assertEquals(9126, villaInfo.getResources().getCurrentWood());
+        assertEquals(117887, villaInfo.getResources().getCurrentClay());
+        assertEquals(14788, villaInfo.getResources().getCurrentIron());
+    }
+
 }
