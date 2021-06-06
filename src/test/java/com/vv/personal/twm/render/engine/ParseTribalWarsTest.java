@@ -193,7 +193,7 @@ public class ParseTribalWarsTest {
     @Test
     public void testExtractMarketInfo() {
         String html = readFileFromLocation("src/test/resources/tw.market.create_offers.html");
-        VillaProto.Villa villaInfo = extractMarketInfo(html);
+        VillaProto.Villa villaInfo = extractMarketInfoFromCreateOffers(html);
 
         System.out.println(villaInfo);
         assertEquals(46, villaInfo.getAvailableMerchants());

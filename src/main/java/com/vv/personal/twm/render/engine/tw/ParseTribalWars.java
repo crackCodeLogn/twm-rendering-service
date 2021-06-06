@@ -339,7 +339,7 @@ public class ParseTribalWars {
         return villa;
     }
 
-    public static VillaProto.Villa extractMarketInfo(String marketHtml) {
+    public static VillaProto.Villa extractMarketInfoFromCreateOffers(String marketHtml) {
         VillaProto.Villa.Builder villa = VillaProto.Villa.newBuilder();
         VillaProto.Resources.Builder resources = VillaProto.Resources.newBuilder();
         int availableMerchants = ZERO_INT;
