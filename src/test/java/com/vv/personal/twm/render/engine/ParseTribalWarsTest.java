@@ -192,7 +192,7 @@ public class ParseTribalWarsTest {
 
     @Test
     public void testExtractMarketInfo() {
-        String html = readFileFromLocation("src/test/resources/tw.market.trade.html");
+        String html = readFileFromLocation("src/test/resources/tw.market.create_offers.html");
         VillaProto.Villa villaInfo = extractMarketInfo(html);
 
         System.out.println(villaInfo);
