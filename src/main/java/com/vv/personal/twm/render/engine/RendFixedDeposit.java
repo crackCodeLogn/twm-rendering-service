@@ -1,7 +1,7 @@
 package com.vv.personal.twm.render.engine;
 
-import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,12 +69,12 @@ public class RendFixedDeposit extends Rend {
     }
 
     public static String generateTableWithAnnualBreakdown(FixedDepositProto.FixedDepositList fixedDepositList) {
-        Table<String, String, FixedDepositProto.AnnualBreakdown> annualBreakdownTable = HashBasedTable.create();
+        Table<String, String, FixedDepositProto.AnnualBreakdown> annualBreakdownTable = TreeBasedTable.create();
         fixedDepositList.getFixedDepositList().forEach(fixedDeposit ->
                 fixedDeposit.getAnnualBreakdownList().getAnnualBreakdownList().forEach(annualBreakdown ->
-                        annualBreakdownTable.put(fixedDeposit.getFdNumber(), annualBreakdown.getFinancialYear(), annualBreakdown)));
-        LOGGER.info("Guava table constructed: {}", annualBreakdownTable.toString());
-
+                        annualBreakdownTable.put(fixedDeposit.getFdNumber(), annualBreakdown.getFinancialYear(), annualBreakdown))
+        );
+        LOGGER.info("Guava table constructed: {}", annualBreakdownTable);
 
         final StringBuilder table = new StringBuilder(HTML_TABLE_START);
         startRow(table);
