@@ -339,6 +339,41 @@ public class ParseTribalWars {
         return villa;
     }
 
+    public static VillaProto.Villa extractMarketInfoFromTrade(String marketHtml) {
+        VillaProto.Villa.Builder villa = VillaProto.Villa.newBuilder();
+        VillaProto.Resources.Builder resources = VillaProto.Resources.newBuilder();
+        int availableMerchants = ZERO_INT;
+        Document document = Jsoup.parse(marketHtml);
+        try {
+            Elements tables = document.getElementsByClass("smallPadding");
+            Optional<Element> reqTable = tables.stream().findFirst();
+            if (reqTable.isPresent()) {
+                Map<String, String> collectedData = new HashMap<>();
+                reqTable.get().select(TAG_TR).get(0).select(TAG_TD).stream()
+                        .filter(element -> !element.attr(CLASS).contains("icon-box"))
+                        .forEach(element -> collectedData.put(element.select(SPAN).attr(ID), element.text()));
+                resources.setCurrentClay(Long.parseLong(collectedData.getOrDefault("stone", EMPTY_LONG_STR)));
+                resources.setCurrentWood(Long.parseLong(collectedData.getOrDefault("wood", EMPTY_LONG_STR)));
+                resources.setCurrentIron(Long.parseLong(collectedData.getOrDefault("iron", EMPTY_LONG_STR)));
+                resources.setWarehouseCapacity(Long.parseLong(collectedData.getOrDefault("storage", EMPTY_LONG_STR)));
+            } else {
+                LOGGER.error("Failed to obtain the resources info for villa");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract resources info from html. ", e);
+        }
+
+        try {
+            availableMerchants = Integer.parseInt(document.getElementById("market_merchant_available_count").text());
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract available merchants info from html. ", e);
+        }
+        villa.setResources(resources.build());
+        villa.setAvailableMerchants(availableMerchants);
+        LOGGER.info("Recorded info for villa: {}", villa);
+        return villa.build();
+    }
+
     public static VillaProto.Villa extractMarketInfoFromCreateOffers(String marketHtml) {
         VillaProto.Villa.Builder villa = VillaProto.Villa.newBuilder();
         VillaProto.Resources.Builder resources = VillaProto.Resources.newBuilder();

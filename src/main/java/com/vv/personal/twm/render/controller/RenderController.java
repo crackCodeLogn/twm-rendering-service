@@ -165,4 +165,15 @@ public class RenderController {
         return populatedVillaInfo.build();
     }
 
+    @PostMapping("/tw/parse/market/trade")
+    public VillaProto.Villa parseTribalWarsMarketTrade(@RequestBody HtmlDataParcelProto.Parcel parcel) {
+        VillaProto.Villa.Builder populatedVillaInfo = VillaProto.Villa.newBuilder();
+        try {
+            return ParseTribalWars.extractMarketInfoFromTrade(parcel.getMarketPageSource());
+        } catch (Exception e) {
+            LOGGER.error("Failed to parse market pages link. ", e);
+        }
+        return populatedVillaInfo.build();
+    }
+
 }
