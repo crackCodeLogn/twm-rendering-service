@@ -2,10 +2,12 @@ package com.vv.personal.twm.render.controller;
 
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import com.vv.personal.twm.artifactory.generated.deposit.FixedDepositProto;
+import com.vv.personal.twm.artifactory.generated.scheduler.ClassScheduler;
 import com.vv.personal.twm.artifactory.generated.tw.HtmlDataParcelProto;
 import com.vv.personal.twm.artifactory.generated.tw.SupportReportProto;
 import com.vv.personal.twm.artifactory.generated.tw.VillaProto;
 import com.vv.personal.twm.render.engine.RendBank;
+import com.vv.personal.twm.render.engine.RendClassSchedules;
 import com.vv.personal.twm.render.engine.RendFixedDeposit;
 import com.vv.personal.twm.render.engine.tw.ParseTribalWars;
 import com.vv.personal.twm.render.engine.tw.RendTribalWars;
@@ -53,6 +55,13 @@ public class RenderController {
         if (fixedDepositList.getFixedDepositList().isEmpty()) return "FAILED - EMPTY JSON!";
         LOGGER.info("Received string to render for FD: {}", fixedDepositList);
         return RendFixedDeposit.generateTableWithAnnualBreakdown(fixedDepositList);
+    }
+
+    @PostMapping("/rendClassSchedule")
+    public String rendClassSchedule(@RequestBody ClassScheduler.ClassCells classCells) {
+        if (classCells.getClassCellsList().isEmpty()) return "FAILED - EMPTY JSON!";
+        LOGGER.info("Received string to render for Classes: {}", classCells);
+        return RendClassSchedules.generateTable(classCells);
     }
 
     @PostMapping("/tw/parse/overview")
