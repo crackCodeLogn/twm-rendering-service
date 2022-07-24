@@ -7,6 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import static com.vv.personal.twm.render.constants.Constants.HTML_TABLE_END;
 import static com.vv.personal.twm.render.constants.Constants.HTML_TABLE_START;
 
@@ -26,10 +31,26 @@ public class RendClassSchedules extends Rend {
                 "W",
                 "Th",
                 "F");
+        Map<String, String> codeAndProfMap = new HashMap<>();
+        Map<String, String> codeAndSubjectMap = new HashMap<>();
+        Set<String> compulsoryCodeSet = new HashSet<>();
+        Set<String> businessCodeSet = new HashSet<>();
+        Set<String> aiCodeSet = new HashSet<>();
+        classes.getClasses().getClassesList().forEach(scheduledClass -> {
+            codeAndProfMap.putIfAbsent(scheduledClass.getCode(), scheduledClass.getProf());
+            codeAndSubjectMap.putIfAbsent(scheduledClass.getCode(), scheduledClass.getName());
+            if (scheduledClass.getCompulsory()) compulsoryCodeSet.add(scheduledClass.getCode());
+            if (scheduledClass.getCode().startsWith("BSMM")) businessCodeSet.add(scheduledClass.getCode());
+            if (scheduledClass.getAi()) aiCodeSet.add(scheduledClass.getCode());
+        });
 
         Table<String, String, StringBuilder> scheduleTable = HashBasedTable.create();
         classes.getClassCellsList().forEach(scheduledClass -> {
-            String code = scheduledClass.getCode();
+            String code = scheduledClass.getCode(), originalCode = scheduledClass.getCode();
+            if (compulsoryCodeSet.contains(code)) code = String.format("<strong>%s</strong>", code);
+            if (businessCodeSet.contains(originalCode)) code = String.format("<font color='brown'>%s</font>", code);
+            if (aiCodeSet.contains(originalCode)) code = String.format("<font color='blue'>%s</font>", code);
+            code = String.format("<table><tr><td>%s</td></tr><tr><td>%s</td></tr><tr><td><i>%s</i></td></tr></table>", code, codeAndSubjectMap.getOrDefault(originalCode, ""), codeAndProfMap.getOrDefault(originalCode, ""));
             String day = scheduledClass.getDay();
             String timeSlot = String.format("<tr><td>%s-%s</td></tr>", scheduledClass.getStartTime(), scheduledClass.getEndTime());
 
