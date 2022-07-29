@@ -37,6 +37,7 @@ public class RendFixedDeposit extends Rend {
                 "Days",
                 "Earned Interest",
                 "Total Amount",
+                "Active?",
                 "Nominee");
 
         AtomicInteger counter = new AtomicInteger(0);
@@ -58,6 +59,7 @@ public class RendFixedDeposit extends Rend {
                         fixedDeposit.getDays(),
                         formatDouble(fixedDeposit.getExpectedInterest()),
                         formatDouble(fixedDeposit.getExpectedAmount()),
+                        fixedDeposit.getIsFdActive(),
                         fixedDeposit.getNominee());
             } catch (Exception e) {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", fixedDeposit, e);
