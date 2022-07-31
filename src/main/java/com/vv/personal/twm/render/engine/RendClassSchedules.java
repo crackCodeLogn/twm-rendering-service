@@ -52,7 +52,7 @@ public class RendClassSchedules extends Rend {
             if (aiCodeSet.contains(originalCode)) code = String.format("<font color='blue'>%s</font>", code);
             code = String.format("<table><tr><td>%s</td></tr><tr><td>%s</td></tr><tr><td><i>%s</i></td></tr></table>", code, codeAndSubjectMap.getOrDefault(originalCode, ""), codeAndProfMap.getOrDefault(originalCode, ""));
             String day = scheduledClass.getDay();
-            String timeSlot = String.format("<tr><td>%s-%s</td></tr>", scheduledClass.getStartTime(), scheduledClass.getEndTime());
+            String timeSlot = String.format("<tr><td>%s-%s</td></tr><tr><td>%s</td></tr>", scheduledClass.getStartTime(), scheduledClass.getEndTime(), scheduledClass.getLocation());
 
             if (scheduleTable.contains(code, day)) {
                 scheduleTable.put(code, day, scheduleTable.get(code, day).append(timeSlot));
