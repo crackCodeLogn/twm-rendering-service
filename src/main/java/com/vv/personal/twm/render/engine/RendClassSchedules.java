@@ -31,13 +31,11 @@ public class RendClassSchedules extends Rend {
                 "W",
                 "Th",
                 "F");
-        Map<String, String> codeAndProfMap = new HashMap<>();
         Map<String, String> codeAndSubjectMap = new HashMap<>();
         Set<String> compulsoryCodeSet = new HashSet<>();
         Set<String> businessCodeSet = new HashSet<>();
         Set<String> aiCodeSet = new HashSet<>();
         classes.getClasses().getClassesList().forEach(scheduledClass -> {
-            codeAndProfMap.putIfAbsent(scheduledClass.getCode(), scheduledClass.getProf());
             codeAndSubjectMap.putIfAbsent(scheduledClass.getCode(), scheduledClass.getName());
             if (scheduledClass.getCompulsory()) compulsoryCodeSet.add(scheduledClass.getCode());
             if (scheduledClass.getCode().startsWith("BSMM")) businessCodeSet.add(scheduledClass.getCode());
@@ -50,7 +48,7 @@ public class RendClassSchedules extends Rend {
             if (compulsoryCodeSet.contains(code)) code = String.format("<strong>%s</strong>", code);
             if (businessCodeSet.contains(originalCode)) code = String.format("<font color='brown'>%s</font>", code);
             if (aiCodeSet.contains(originalCode)) code = String.format("<font color='blue'>%s</font>", code);
-            code = String.format("<table><tr><td>%s</td></tr><tr><td>%s</td></tr><tr><td><i>%s</i></td></tr></table>", code, codeAndSubjectMap.getOrDefault(originalCode, ""), codeAndProfMap.getOrDefault(originalCode, ""));
+            code = String.format("<table><tr><td>%s</td></tr><tr><td>%s</td></tr><tr><td><i>%s</i></td></tr></table>", code, codeAndSubjectMap.getOrDefault(originalCode, ""), scheduledClass.getProf());
             String day = scheduledClass.getDay();
             String timeSlot = String.format("<tr><td>%s-%s</td></tr><tr><td>%s</td></tr>", scheduledClass.getStartTime(), scheduledClass.getEndTime(), scheduledClass.getLocation());
 
