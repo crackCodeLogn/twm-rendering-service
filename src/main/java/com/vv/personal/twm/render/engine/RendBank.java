@@ -26,7 +26,8 @@ public class RendBank extends Rend {
                 "Name",
                 "Type",
                 "IFSC",
-                "Contact");
+                "Contact",
+                "CountryCode");
 
         AtomicInteger counter = new AtomicInteger(0);
         bankList.getBanksList().forEach(bank -> {
@@ -37,7 +38,8 @@ public class RendBank extends Rend {
                         bank.getName(),
                         bank.getBankType(),
                         bank.getIFSC(),
-                        bank.getContactNumber());
+                        bank.getContactNumber(),
+                        bank.getCountryCode());
             } catch (Exception e) {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", bank, e);
             }
@@ -47,7 +49,7 @@ public class RendBank extends Rend {
         return table.toString();
     }
 
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public static String generateTable(String entireJsonList) {
         final String[] bankSplit = extractRecordsFromString(entireJsonList);
         //https://sites.google.com/site/gson/gson-user-guide#TOC-Collections-Examples
