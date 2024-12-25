@@ -7,6 +7,7 @@ import com.vv.personal.twm.artifactory.generated.tw.HtmlDataParcelProto;
 import com.vv.personal.twm.artifactory.generated.tw.SupportReportProto;
 import com.vv.personal.twm.artifactory.generated.tw.VillaProto;
 import com.vv.personal.twm.render.engine.RendBank;
+import com.vv.personal.twm.render.engine.RendBankAccount;
 import com.vv.personal.twm.render.engine.RendClassSchedules;
 import com.vv.personal.twm.render.engine.RendFixedDeposit;
 import com.vv.personal.twm.render.engine.tw.ParseTribalWars;
@@ -41,6 +42,13 @@ public class RenderController {
         if (bankList.getBanksList().isEmpty()) return "FAILED - EMPTY JSON!";
         LOGGER.info("Received string to render for bank: {}", bankList);
         return RendBank.generateTable(bankList);
+    }
+
+    @PostMapping("/rendBankAccounts")
+    public String rendBanks(@RequestBody BankProto.BankAccounts bankAccounts) {
+        if (bankAccounts.getAccountsList().isEmpty()) return "FAILED - EMPTY JSON!";
+        LOGGER.info("Received string to render for bank accounts: {}", bankAccounts);
+        return RendBankAccount.generateTable(bankAccounts);
     }
 
     @PostMapping("/rendFds")

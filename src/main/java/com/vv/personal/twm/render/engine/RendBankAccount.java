@@ -32,6 +32,8 @@ public class RendBankAccount extends Rend {
                 "Institution",
                 "Interest Rate",
                 "Active",
+                "CCY",
+                "Note",
                 "Last Updated");
 
         AtomicInteger counter = new AtomicInteger(0);
@@ -49,6 +51,8 @@ public class RendBankAccount extends Rend {
                         bankAccount.getInstitutionNumber(),
                         bankAccount.getInterestRate(),
                         bankAccount.getIsActive(),
+                        bankAccount.getCcy(),
+                        bankAccount.getNote(),
                         Instant.ofEpochSecond(bankAccount.getLastUpdatedAt().getSeconds(),
                                 bankAccount.getLastUpdatedAt().getNanos())
                 );
