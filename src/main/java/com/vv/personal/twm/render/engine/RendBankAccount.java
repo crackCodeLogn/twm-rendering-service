@@ -1,5 +1,6 @@
 package com.vv.personal.twm.render.engine;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.vv.personal.twm.render.constants.Constants.HTML_TABLE_END;
-import static com.vv.personal.twm.render.constants.Constants.HTML_TABLE_START;
+import static com.vv.personal.twm.render.constants.Constants.*;
+import static com.vv.personal.twm.render.util.DoubleFormatterUtil.formatDouble;
 
 /**
  * @author Vivek
@@ -37,6 +38,7 @@ public class RendBankAccount extends Rend {
                 "Last Updated");
 
         AtomicInteger counter = new AtomicInteger(0);
+        AtomicDouble totalBalance = new AtomicDouble(0);
         bankAccounts.getAccountsList().forEach(bankAccount -> {
             try {
                 addRowCells(table,
@@ -56,10 +58,31 @@ public class RendBankAccount extends Rend {
                         Instant.ofEpochSecond(bankAccount.getLastUpdatedAt().getSeconds(),
                                 bankAccount.getLastUpdatedAt().getNanos())
                 );
+                totalBalance.addAndGet(bankAccount.getBalance());
             } catch (Exception e) {
                 LOGGER.error("Failed to convert '{}' to HTML. Skipping. ", bankAccount, e);
             }
         });
+
+        //agg row
+        startRow(table);
+        addUnboundedRowCells(table,
+                counter.incrementAndGet(),
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR,
+                formatDouble(totalBalance.get()),
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR,
+                EMPTY_STR);
+        endRow(table);
+
         table.append(HTML_TABLE_END);
         LOGGER.info("Rendering finished for {} bank accounts", bankAccounts.getAccountsCount());
         return table.toString();
