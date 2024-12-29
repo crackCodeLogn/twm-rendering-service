@@ -2,6 +2,7 @@ package com.vv.personal.twm.render.engine;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import com.vv.personal.twm.artifactory.generated.bank.BankProto;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class RendBankAccount extends Rend {
                         bankAccount.getNumber(),
                         bankAccount.getName(),
                         bankAccount.getBalance(),
-                        bankAccount.getBankAccountType(),
+                        StringUtils.join(bankAccount.getBankAccountTypesList().stream().map(BankProto.BankAccountType::name).toList(), "|"),
                         bankAccount.getBank().getIFSC(),
                         bankAccount.getTransitNumber(),
                         bankAccount.getInstitutionNumber(),
